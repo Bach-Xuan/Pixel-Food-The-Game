@@ -1,0 +1,93 @@
+body {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #f0f0f0;
+    margin: 0;
+}
+
+#game-status-container,
+#score,
+#message,
+#timer,
+#author,
+#reset-button {
+    font-family: "Pixelify Sans", serif;
+}
+
+#game-status-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 20px;
+    height: 60px;
+}
+
+#game-board {
+    display: grid;
+    grid-template-columns: repeat(4, 100px);
+    grid-gap: 10px;
+}
+
+#score,
+#message {
+    margin: 5px 0;
+    text-align: center;
+}
+
+#score {
+    font-size: 24px;
+}
+
+#message {
+    font-size: 20px;
+    color: #333;
+}
+
+.card {
+    width: 100px;
+    height: 100px;
+    border: 2px solid #000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    background-size: cover;
+    background-image: url('image/cards.jpg');
+}
+
+#timer,
+#author,
+#reset-button {
+    font-size: 30px;
+}
+
+#timer {
+    margin-top: 20px;
+    position: fixed;
+    bottom: 60px;
+    right: 20px;
+    color: #333;
+}
+
+#author {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+}
+
+#reset-button {
+    margin-top: 20px;
+    padding: 10px 20px;
+    cursor: pointer;
+    color: #333;
+    background-color: #f0f0f0;
+    border: none;
+}
+
+#reset-button:hover {
+    transform: scale(1.2);
+    color: #000;
+}
