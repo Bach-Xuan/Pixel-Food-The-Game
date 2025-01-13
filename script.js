@@ -89,7 +89,17 @@ function resetBoard() {
 
 function updateScore() {
     score++;
-    document.getElementById('score').textContent = `Score: ${score}`;
+    const scoreElement = document.getElementById('score');
+    scoreElement.textContent = `Score: ${score}`;
+
+    const incrementElement = document.createElement('span');
+    incrementElement.textContent = '+1';
+    incrementElement.classList.add('score-increment');
+    scoreElement.appendChild(incrementElement);
+
+    setTimeout(() => {
+        incrementElement.remove();
+    }, 1000);
 }
 
 function updateMessage(message) {
@@ -124,7 +134,7 @@ function resetGame() {
 }
 
 function createSnowflakes() {
-    const snowflakeCount = 30;
+    const snowflakeCount = 50;
     for (let i = 0; i < snowflakeCount; i++) {
         const snowflake = document.createElement('div');
         snowflake.classList.add('snowflake');
@@ -132,6 +142,7 @@ function createSnowflakes() {
         snowflake.style.height = snowflake.style.width;
         snowflake.style.left = `${Math.random() * 100}vw`;
         snowflake.style.animationDuration = `${Math.random() * 3 + 2}s`;
+        snowflake.style.animationDelay = `${Math.random() * 5}s`;
         document.body.appendChild(snowflake);
     }
 }
