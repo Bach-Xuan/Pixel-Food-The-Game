@@ -4,8 +4,9 @@ body {
     justify-content: center;
     align-items: center;
     height: 100vh;
-    background-color: #f0f0f0;
+    background-color: #fafaa5;
     margin: 0;
+    overflow: hidden;
 }
 
 #game-status-container,
@@ -59,8 +60,7 @@ body {
 }
 
 #timer,
-#author,
-#reset-button {
+#author {
     font-size: 30px;
 }
 
@@ -82,12 +82,28 @@ body {
     margin-top: 20px;
     padding: 10px 20px;
     cursor: pointer;
-    color: #333;
-    background-color: #f0f0f0;
+    font-size: 50px;
+    color: white;
+    -webkit-text-stroke: 2.5px red;
+    background-color: #fafaa5;
     border: none;
 }
 
 #reset-button:hover {
     transform: scale(1.2);
-    color: #000;
+}
+
+.snowflake {
+    position: absolute;
+    top: -10px;
+    background-color: white;
+    border-radius: 50%;
+    opacity: 0.8;
+    animation: fall linear infinite;
+}
+
+@keyframes fall {
+    to {
+        transform: translate(-25vw, 100vh);
+    }
 }

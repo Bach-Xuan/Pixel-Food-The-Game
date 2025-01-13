@@ -8,7 +8,7 @@ const cards = [
 ];
 
 let firstCard = null, secondCard = null, lockBoard = false, score = 0, matchesFound = 0;
-let timerInterval, timeElapsed = 0, timerStarted = false;
+let timerInterval, timeElapsed = 0, timerStarted = false, startTime;
 
 function shuffle(array) {
     for (let i = array.length - 1; i > 0; i--) {
@@ -97,16 +97,17 @@ function updateMessage(message) {
 }
 
 function startTimer() {
-    timeElapsed = 0;
-    document.getElementById('timer').textContent = `Time: ${timeElapsed}s`;
+    startTime = Date.now();
+    document.getElementById('timer').textContent = `Time: 0.000s`;
     timerInterval = setInterval(() => {
-        timeElapsed++;
-        document.getElementById('timer').textContent = `Time: ${timeElapsed}s`;
-    }, 1000);
+        timeElapsed = (Date.now() - startTime) / 1000;
+        document.getElementById('timer').textContent = `Time: ${timeElapsed.toFixed(3)}s`;
+    }, 10);
 }
 
 function stopTimer() {
     clearInterval(timerInterval);
+    document.getElementById('timer').textContent = `Time: ${timeElapsed.toFixed(3)}s`;
 }
 
 function resetGame() {
@@ -118,11 +119,25 @@ function resetGame() {
     document.getElementById('score').textContent = `Score: ${score}`;
     document.getElementById('message').textContent = '';
     stopTimer();
-    document.getElementById('timer').textContent = `Time: 0s`;
+    document.getElementById('timer').textContent = `Time: 0.000s`;
     createBoard();
+}
+
+function createSnowflakes() {
+    const snowflakeCount = 30;
+    for (let i = 0; i < snowflakeCount; i++) {
+        const snowflake = document.createElement('div');
+        snowflake.classList.add('snowflake');
+        snowflake.style.width = `${Math.random() * 10 + 5}px`;
+        snowflake.style.height = snowflake.style.width;
+        snowflake.style.left = `${Math.random() * 100}vw`;
+        snowflake.style.animationDuration = `${Math.random() * 3 + 2}s`;
+        document.body.appendChild(snowflake);
+    }
 }
 
 document.addEventListener('DOMContentLoaded', () => {
     createBoard();
     document.getElementById('reset-button').addEventListener('click', resetGame);
+    createSnowflakes();
 });
