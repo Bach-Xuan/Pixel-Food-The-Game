@@ -9,16 +9,16 @@ body {
     overflow: hidden;
 }
 
-#game-status-container,
+#status-container,
 #score,
 #message,
 #timer,
 #author,
-#reset-button {
+#reset-btn {
     font-family: "Pixelify Sans", serif;
 }
 
-#game-status-container {
+#status-container {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -26,7 +26,7 @@ body {
     height: 60px;
 }
 
-#game-board {
+#board {
     display: grid;
     grid-template-columns: repeat(4, 100px);
     grid-gap: 10px;
@@ -51,10 +51,10 @@ body {
     position: absolute;
     font-size: 24px;
     color: blue;
-    animation: fadeOut 1s forwards;
+    animation: fade-out 1s forwards;
 }
 
-@keyframes fadeOut {
+@keyframes fade-out {
     0% {
         opacity: 1;
         transform: translateY(0);
@@ -97,7 +97,7 @@ body {
     right: 20px;
 }
 
-#reset-button {
+#reset-btn {
     margin-top: 20px;
     padding: 10px 20px;
     cursor: pointer;
@@ -108,17 +108,21 @@ body {
     border: none;
 }
 
-#reset-button:hover {
+#reset-btn:hover {
     transform: scale(1.2);
 }
 
-.snowflake {
+.snowflake-fall,
+.snowflake-rise {
     position: absolute;
-    top: -10px;
     background-color: white;
-    border: 2px solid blue;
     border-radius: 50%;
     opacity: 0.8;
+}
+
+.snowflake-fall {
+    top: -10px;
+    border: 2px solid blue;
     animation: fall linear infinite;
 }
 
@@ -129,5 +133,21 @@ body {
 
     to {
         transform: translate(-25vw, 100vh);
+    }
+}
+
+.snowflake-rise {
+    bottom: -10px;
+    border: 2px solid red;
+    animation: rise linear infinite;
+}
+
+@keyframes rise {
+    from {
+        transform: translateY(100vh);
+    }
+
+    to {
+        transform: translateY(-100vh);
     }
 }

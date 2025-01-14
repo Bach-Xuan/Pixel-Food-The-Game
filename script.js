@@ -18,7 +18,7 @@ function shuffle(array) {
 }
 
 function createBoard() {
-    const gameBoard = document.getElementById('game-board');
+    const gameBoard = document.getElementById('board');
     shuffle(cards);
     cards.forEach(card => {
         const cardElement = document.createElement('div');
@@ -121,7 +121,7 @@ function stopTimer() {
 }
 
 function resetGame() {
-    const gameBoard = document.getElementById('game-board');
+    const gameBoard = document.getElementById('board');
     gameBoard.innerHTML = '';
     score = 0;
     matchesFound = 0;
@@ -133,22 +133,23 @@ function resetGame() {
     createBoard();
 }
 
-function createSnowflakes() {
-    const snowflakeCount = 50;
-    for (let i = 0; i < snowflakeCount; i++) {
+function createSnowflakes(type, count, color) {
+    for (let i = 0; i < count; i++) {
         const snowflake = document.createElement('div');
-        snowflake.classList.add('snowflake');
+        snowflake.classList.add(type);
         snowflake.style.width = `${Math.random() * 10 + 5}px`;
         snowflake.style.height = snowflake.style.width;
         snowflake.style.left = `${Math.random() * 100}vw`;
-        snowflake.style.animationDuration = `${Math.random() * 3 + 2}s`;
+        snowflake.style.animationDuration = `${Math.random() * 5 + 3}s`;
         snowflake.style.animationDelay = `${Math.random() * 5}s`;
+        snowflake.style.border = `2px solid ${color}`;
         document.body.appendChild(snowflake);
     }
 }
 
 document.addEventListener('DOMContentLoaded', () => {
     createBoard();
-    document.getElementById('reset-button').addEventListener('click', resetGame);
-    createSnowflakes();
+    document.getElementById('reset-btn').addEventListener('click', resetGame);
+    createSnowflakes('snowflake-fall', 20, 'blue');
+    createSnowflakes('snowflake-rise', 10, 'red');
 });
