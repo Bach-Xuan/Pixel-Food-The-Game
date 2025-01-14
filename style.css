@@ -4,7 +4,7 @@ body {
     justify-content: center;
     align-items: center;
     height: 100vh;
-    background-color: #ffffba;
+    background-color: #feffcc;
     margin: 0;
     overflow: hidden;
 }
@@ -50,7 +50,7 @@ body {
 .score-increment {
     position: absolute;
     font-size: 24px;
-    color: blue;
+    color: green;
     animation: fade-out 1s forwards;
 }
 
@@ -104,7 +104,7 @@ body {
     font-size: 50px;
     color: white;
     -webkit-text-stroke: 3px red;
-    background-color: #ffffba;
+    background-color: #feffcc;
     border: none;
 }
 
