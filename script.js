@@ -17,8 +17,8 @@ function shuffle(array) {
     }
 }
 
-function createBoard() {
-    const gameBoard = document.getElementById('board');
+function createGameBoard() {
+    const gameBoard = document.getElementById('game-board');
     shuffle(cards);
     cards.forEach(card => {
         const cardElement = document.createElement('div');
@@ -33,7 +33,7 @@ function flipCard() {
     if (lockBoard || this === firstCard) return;
 
     if (!timerStarted) {
-        startTimer();
+        startGameTimer();
         timerStarted = true;
     }
 
@@ -56,12 +56,12 @@ function checkForMatch() {
 
 function handleMatch() {
     disableCards();
-    updateScore();
+    updateGameScore(1);
     matchesFound++;
-    updateMessage("You found a match!");
+    updateGameMessage("You found a match!");
     if (matchesFound === cards.length / 2) {
-        updateMessage("Congratulations! You found them all!");
-        stopTimer();
+        updateGameMessage("Congratulations! You found them all!");
+        stopGameTimer();
     }
 }
 
@@ -73,8 +73,9 @@ function handleNoMatch() {
         firstCard.style.backgroundImage = 'url(image/cards.jpg)';
         secondCard.style.backgroundImage = 'url(image/cards.jpg)';
         resetBoard();
-        updateMessage("Sorry, try again!");
-    }, 1000);
+        updateGameMessage("Sorry, try again!");
+        updateGameScore(-1);
+    }, 500);
 }
 
 function disableCards() {
@@ -87,50 +88,59 @@ function resetBoard() {
     [firstCard, secondCard, lockBoard] = [null, null, false];
 }
 
-function updateScore() {
-    score++;
-    const scoreElement = document.getElementById('score');
-    scoreElement.textContent = `Score: ${score}`;
+function updateGameScore(value) {
+    score += value;
+    const scoreElement = document.getElementById('game-score');
+    scoreElement.textContent = `${score}`;
+    updateScoreColor(scoreElement);
 
-    const incrementElement = document.createElement('span');
-    incrementElement.textContent = '+1';
-    incrementElement.classList.add('score-increment');
-    scoreElement.appendChild(incrementElement);
-
-    setTimeout(() => {
-        incrementElement.remove();
-    }, 1000);
+    const scoreChangeElement = document.createElement('span');
+    scoreChangeElement.textContent = value > 0 ? `+${value}` : `${value}`;
+    scoreChangeElement.classList.add(value > 0 ? 'score-increment' : 'score-decrement');
+    scoreElement.appendChild(scoreChangeElement);
 }
 
-function updateMessage(message) {
-    document.getElementById('message').textContent = message;
+function updateScoreColor(scoreElement) {
+    scoreElement.classList.toggle('positive', score > 0);
+    scoreElement.classList.toggle('negative', score < 0);
+    scoreElement.classList.toggle('neutral', score === 0);
 }
 
-function startTimer() {
+function updateGameMessage(message) {
+    document.getElementById('game-message').textContent = message;
+}
+
+function startGameTimer() {
     startTime = Date.now();
-    document.getElementById('timer').textContent = `Time: 0.000s`;
+    const timerElement = document.getElementById('game-timer');
+    timerElement.textContent = `Time: 0.000s`;
+    timerElement.classList.add('shake');
     timerInterval = setInterval(() => {
         timeElapsed = (Date.now() - startTime) / 1000;
-        document.getElementById('timer').textContent = `Time: ${timeElapsed.toFixed(3)}s`;
+        timerElement.textContent = `Time: ${timeElapsed.toFixed(3)}s`;
     }, 10);
 }
 
-function stopTimer() {
+function stopGameTimer() {
     clearInterval(timerInterval);
-    document.getElementById('timer').textContent = `Time: ${timeElapsed.toFixed(3)}s`;
+    const timerElement = document.getElementById('game-timer');
+    timerElement.textContent = `Time: ${timeElapsed.toFixed(3)}s`;
+    timerElement.classList.remove('shake');
 }
 
 function resetGame() {
-    const gameBoard = document.getElementById('board');
+    const gameBoard = document.getElementById('game-board');
     gameBoard.innerHTML = '';
     score = 0;
     matchesFound = 0;
     timerStarted = false;
-    document.getElementById('score').textContent = `Score: ${score}`;
-    document.getElementById('message').textContent = '';
-    stopTimer();
-    document.getElementById('timer').textContent = `Time: 0.000s`;
-    createBoard();
+    const scoreElement = document.getElementById('game-score');
+    scoreElement.textContent = `${score}`;
+    updateScoreColor(scoreElement);
+    document.getElementById('game-message').textContent = '';
+    stopGameTimer();
+    document.getElementById('game-timer').textContent = `Time: 0.000s`;
+    createGameBoard();
 }
 
 function createSnowflakes(type, count, color) {
@@ -148,8 +158,8 @@ function createSnowflakes(type, count, color) {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    createBoard();
-    document.getElementById('reset-btn').addEventListener('click', resetGame);
+    createGameBoard();
+    document.getElementById('new-game-btn').addEventListener('click', resetGame);
     createSnowflakes('snowflake-fall', 20, 'blue');
     createSnowflakes('snowflake-rise', 10, 'red');
 });

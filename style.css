@@ -4,21 +4,21 @@ body {
     justify-content: center;
     align-items: center;
     height: 100vh;
-    background-color: #feffcc;
     margin: 0;
     overflow: hidden;
+    background-color: white;
 }
 
-#status-container,
-#score,
-#message,
-#timer,
-#author,
-#reset-btn {
+#game-status,
+#game-score,
+#game-message,
+#game-timer,
+#game-author,
+#new-game-btn {
     font-family: "Pixelify Sans", serif;
 }
 
-#status-container {
+#game-status {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -26,32 +26,52 @@ body {
     height: 60px;
 }
 
-#board {
+#game-board {
     display: grid;
     grid-template-columns: repeat(4, 100px);
     grid-gap: 10px;
 }
 
-#score,
-#message {
+#game-score,
+#game-message {
     margin: 5px 0;
     text-align: center;
 }
 
-#score {
-    font-size: 24px;
+#game-score {
+    font-size: 50px;
 }
 
-#message {
+#game-score.positive {
+    color: blue;
+}
+
+#game-score.negative {
+    color: red;
+}
+
+#game-score.neutral {
+    color: black;
+}
+
+#game-message {
     font-size: 20px;
     color: #333;
 }
 
-.score-increment {
+.score-increment,
+.score-decrement {
     position: absolute;
-    font-size: 24px;
-    color: green;
+    font-size: 30px;
     animation: fade-out 1s forwards;
+}
+
+.score-increment {
+    color: green;
+}
+
+.score-decrement {
+    color: orange;
 }
 
 @keyframes fade-out {
@@ -78,37 +98,74 @@ body {
     background-image: url('image/cards.jpg');
 }
 
-#timer,
-#author {
+#game-timer,
+#game-author {
     font-size: 30px;
 }
 
-#timer {
+#game-timer {
     margin-top: 20px;
     position: fixed;
     bottom: 60px;
     right: 20px;
     color: #333;
+    letter-spacing: 0.1em;
 }
 
-#author {
+#game-timer.shake {
+    animation: shake 1s infinite;
+}
+
+@keyframes shake {
+
+    0%,
+    100% {
+        transform: translate(1px, 1px) rotate(0deg);
+    }
+
+    10%,
+    90% {
+        transform: translate(-1px, -1px) rotate(-0.5deg);
+    }
+
+    20%,
+    80% {
+        transform: translate(-2px, 0px) rotate(0.5deg);
+    }
+
+    30%,
+    70% {
+        transform: translate(2px, 1px) rotate(0deg);
+    }
+
+    40%,
+    60% {
+        transform: translate(1px, -0.5px) rotate(0.5deg);
+    }
+
+    50% {
+        transform: translate(-1px, 1px) rotate(-0.5deg);
+    }
+}
+
+#game-author {
     position: fixed;
     bottom: 20px;
     right: 20px;
 }
 
-#reset-btn {
+#new-game-btn {
     margin-top: 20px;
     padding: 10px 20px;
     cursor: pointer;
     font-size: 50px;
     color: white;
     -webkit-text-stroke: 3px red;
-    background-color: #feffcc;
     border: none;
+    background-color: white;
 }
 
-#reset-btn:hover {
+#new-game-btn:hover {
     transform: scale(1.2);
 }
 

@@ -4,23 +4,25 @@
 <head>
     <link rel="stylesheet" href="style.css">
     <meta charset="UTF-8">
+    <meta name="description" content="An idle cards matching game with pixel food arts.">
+    <meta name="author" content="Lê Xuân Bách">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Memory Card Game</title>
+    <title>Pixel Food The Game</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400..700&display=swap" rel="stylesheet">
 </head>
 
 <body>
-    <div id="status-container">
-        <div id="score">Score: 0</div>
-        <div id="message"></div>
+    <div id="game-status">
+        <div id="game-score">0</div>
+        <div id="game-message"></div>
     </div>
-    <div id="board"></div>
-    <button id="reset-btn">NEW GAME?</button>
-    <div id="timer">Time: 0.000s</div>
-    <div id="author">Created by Lê Xuân Bách</div>
-    <script src="script.js"></script>
+    <div id="game-board"></div>
+    <button id="new-game-btn">NEW GAME?</button>
+    <div id="game-timer">Time: 0.000s</div>
+    <div id="game-author">Created by Lê Xuân Bách</div>
+    <script src="script.js" defer></script>
 </body>
 
 </html>
