@@ -10,6 +10,15 @@ const cards = [
 let firstCard = null, secondCard = null, lockBoard = false, score = 0, matchesFound = 0;
 let timerInterval, timeElapsed = 0, timerStarted = false, startTime;
 
+document.addEventListener('DOMContentLoaded', () => {
+    createGameBoard();
+    document.getElementById('new-game-btn').addEventListener('click', resetGame);
+
+    const notificationContainer = document.createElement('div');
+    notificationContainer.id = 'notification-container';
+    document.body.appendChild(notificationContainer);
+});
+
 function shuffle(array) {
     for (let i = array.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
@@ -20,13 +29,15 @@ function shuffle(array) {
 function createGameBoard() {
     const gameBoard = document.getElementById('game-board');
     shuffle(cards);
+    const fragment = document.createDocumentFragment();
     cards.forEach(card => {
         const cardElement = document.createElement('div');
         cardElement.classList.add('card');
         cardElement.dataset.value = card.img;
         cardElement.addEventListener('click', flipCard);
-        gameBoard.appendChild(cardElement);
+        fragment.appendChild(cardElement);
     });
+    gameBoard.appendChild(fragment);
 }
 
 function flipCard() {
@@ -56,9 +67,10 @@ function checkForMatch() {
 
 function handleMatch() {
     disableCards();
-    updateGameScore(1);
+    updateGameScore(15);
     matchesFound++;
     updateGameMessage("You found a match!");
+
     if (matchesFound === cards.length / 2) {
         updateGameMessage("Congratulations! You found them all!");
         stopGameTimer();
@@ -74,7 +86,7 @@ function handleNoMatch() {
         secondCard.style.backgroundImage = 'url(image/cards.jpg)';
         resetBoard();
         updateGameMessage("Sorry, try again!");
-        updateGameScore(-1);
+        updateGameScore(-10);
     }, 500);
 }
 
@@ -98,6 +110,20 @@ function updateGameScore(value) {
     scoreChangeElement.textContent = value > 0 ? `+${value}` : `${value}`;
     scoreChangeElement.classList.add(value > 0 ? 'score-increment' : 'score-decrement');
     scoreElement.appendChild(scoreChangeElement);
+
+    const previousChanges = scoreElement.querySelectorAll('.score-increment, .score-decrement');
+    previousChanges.forEach(change => {
+        if (change !== scoreChangeElement) {
+            change.style.transform = 'translateY(-20px)';
+        }
+    });
+
+    setTimeout(() => {
+        scoreChangeElement.style.opacity = '0';
+    }, 1000);
+    setTimeout(() => {
+        scoreElement.removeChild(scoreChangeElement);
+    }, 1500);
 }
 
 function updateScoreColor(scoreElement) {
@@ -107,7 +133,32 @@ function updateScoreColor(scoreElement) {
 }
 
 function updateGameMessage(message) {
-    document.getElementById('game-message').textContent = message;
+    const notificationContainer = document.getElementById('notification-container');
+    const notification = document.createElement('div');
+    notification.classList.add('notification', 'show');
+    notification.innerHTML = `<span class="message">${message}</span><button class="close-btn">x</button>`;
+
+    notificationContainer.appendChild(notification);
+
+    const closeButton = notification.querySelector('.close-btn');
+    closeButton.addEventListener('click', () => {
+        notification.classList.remove('show');
+        setTimeout(() => {
+            notificationContainer.removeChild(notification);
+        }, 300);
+    });
+
+    const previousNotifications = notificationContainer.querySelectorAll('.notification.show');
+    previousNotifications.forEach((notif, index) => {
+        notif.style.bottom = `${100 + (previousNotifications.length - index - 1) * 60}px`;
+    });
+
+    setTimeout(() => {
+        notification.classList.remove('show');
+        setTimeout(() => {
+            notificationContainer.removeChild(notification);
+        }, 300);
+    }, 3000);
 }
 
 function startGameTimer() {
@@ -115,10 +166,18 @@ function startGameTimer() {
     const timerElement = document.getElementById('game-timer');
     timerElement.textContent = `Time: 0.000s`;
     timerElement.classList.add('shake');
+    let lastSecond = 0;
+
     timerInterval = setInterval(() => {
         timeElapsed = (Date.now() - startTime) / 1000;
         timerElement.textContent = `Time: ${timeElapsed.toFixed(3)}s`;
-    }, 10);
+        const currentSecond = Math.floor(timeElapsed);
+
+        if (timeElapsed > 10 && currentSecond !== lastSecond && currentSecond > 10) {
+            updateGameScore(-1);
+            lastSecond = currentSecond;
+        }
+    }, 110);
 }
 
 function stopGameTimer() {
@@ -134,6 +193,7 @@ function resetGame() {
     score = 0;
     matchesFound = 0;
     timerStarted = false;
+
     const scoreElement = document.getElementById('game-score');
     scoreElement.textContent = `${score}`;
     updateScoreColor(scoreElement);
@@ -142,24 +202,3 @@ function resetGame() {
     document.getElementById('game-timer').textContent = `Time: 0.000s`;
     createGameBoard();
 }
-
-function createSnowflakes(type, count, color) {
-    for (let i = 0; i < count; i++) {
-        const snowflake = document.createElement('div');
-        snowflake.classList.add(type);
-        snowflake.style.width = `${Math.random() * 10 + 5}px`;
-        snowflake.style.height = snowflake.style.width;
-        snowflake.style.left = `${Math.random() * 100}vw`;
-        snowflake.style.animationDuration = `${Math.random() * 5 + 3}s`;
-        snowflake.style.animationDelay = `${Math.random() * 5}s`;
-        snowflake.style.border = `2px solid ${color}`;
-        document.body.appendChild(snowflake);
-    }
-}
-
-document.addEventListener('DOMContentLoaded', () => {
-    createGameBoard();
-    document.getElementById('new-game-btn').addEventListener('click', resetGame);
-    createSnowflakes('snowflake-fall', 20, 'blue');
-    createSnowflakes('snowflake-rise', 10, 'red');
-});

@@ -7,14 +7,6 @@ body {
     margin: 0;
     overflow: hidden;
     background-color: white;
-}
-
-#game-status,
-#game-score,
-#game-message,
-#game-timer,
-#game-author,
-#new-game-btn {
     font-family: "Pixelify Sans", serif;
 }
 
@@ -24,6 +16,7 @@ body {
     align-items: center;
     margin-bottom: 20px;
     height: 60px;
+    position: relative;
 }
 
 #game-board {
@@ -57,6 +50,7 @@ body {
 #game-message {
     font-size: 20px;
     color: #333;
+    white-space: nowrap;
 }
 
 .score-increment,
@@ -96,6 +90,33 @@ body {
     cursor: pointer;
     background-size: cover;
     background-image: url('image/cards.jpg');
+}
+
+.notification {
+    position: fixed;
+    bottom: 100px;
+    right: 20px;
+    background-color: #333;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 5px;
+    display: none;
+    align-items: center;
+    transition: transform 0.3s ease-in-out, bottom 0.3s ease-in-out;
+}
+
+.notification.show {
+    display: flex;
+}
+
+.notification .close-btn {
+    margin-left: 10px;
+    cursor: pointer;
+    background-color: red;
+    border: none;
+    color: white;
+    padding: 5px;
+    border-radius: 50%;
 }
 
 #game-timer,
@@ -158,53 +179,14 @@ body {
     margin-top: 20px;
     padding: 10px 20px;
     cursor: pointer;
-    font-size: 50px;
+    font-size: 60px;
     color: white;
     -webkit-text-stroke: 3px red;
     border: none;
     background-color: white;
+    font-family: "Pixelify Sans", serif;
 }
 
 #new-game-btn:hover {
     transform: scale(1.2);
-}
-
-.snowflake-fall,
-.snowflake-rise {
-    position: absolute;
-    background-color: white;
-    border-radius: 50%;
-    opacity: 0.8;
-}
-
-.snowflake-fall {
-    top: -10px;
-    border: 2px solid blue;
-    animation: fall linear infinite;
-}
-
-@keyframes fall {
-    from {
-        transform: translate(0, -100vh);
-    }
-
-    to {
-        transform: translate(-25vw, 100vh);
-    }
-}
-
-.snowflake-rise {
-    bottom: -10px;
-    border: 2px solid red;
-    animation: rise linear infinite;
-}
-
-@keyframes rise {
-    from {
-        transform: translateY(100vh);
-    }
-
-    to {
-        transform: translateY(-100vh);
-    }
 }
