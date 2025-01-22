@@ -7,12 +7,12 @@ const cards = [
     { img: "image/hotdog.jpg" }, { img: "image/hotdog.jpg" }
 ];
 
-let firstCard = null, secondCard = null, lockBoard = false, score = 0, matchesFound = 0;
+let firstCard = null, secondCard = null, boardLocked = false, score = 0, matchesFound = 0;
 let timerInterval, timeElapsed = 0, timerStarted = false, startTime;
 
 document.addEventListener('DOMContentLoaded', () => {
-    createGameBoard();
-    document.getElementById('new-game-btn').addEventListener('click', resetGame);
+    initializeGameBoard();
+    document.getElementById('new-game-button').addEventListener('click', resetGame);
 
     const notificationContainer = document.createElement('div');
     notificationContainer.id = 'notification-container';
@@ -26,8 +26,8 @@ function shuffle(array) {
     }
 }
 
-function createGameBoard() {
-    const gameBoard = document.getElementById('game-board');
+function initializeGameBoard() {
+    const gameBoard = document.getElementById('board');
     shuffle(cards);
     const fragment = document.createDocumentFragment();
     cards.forEach(card => {
@@ -41,10 +41,10 @@ function createGameBoard() {
 }
 
 function flipCard() {
-    if (lockBoard || this === firstCard) return;
+    if (boardLocked || this === firstCard) return;
 
     if (!timerStarted) {
-        startGameTimer();
+        startTimer();
         timerStarted = true;
     }
 
@@ -67,26 +67,26 @@ function checkForMatch() {
 
 function handleMatch() {
     disableCards();
-    updateGameScore(15);
+    updateScore(15);
     matchesFound++;
-    updateGameMessage("You found a match!");
+    displayMessage("You found a match!");
 
     if (matchesFound === cards.length / 2) {
-        updateGameMessage("Congratulations! You found them all!");
-        stopGameTimer();
+        displayMessage("Congratulations! You found them all!");
+        stopTimer();
     }
 }
 
 function handleNoMatch() {
-    lockBoard = true;
+    boardLocked = true;
     setTimeout(() => {
         firstCard.classList.remove('flipped');
         secondCard.classList.remove('flipped');
         firstCard.style.backgroundImage = 'url(image/cards.jpg)';
         secondCard.style.backgroundImage = 'url(image/cards.jpg)';
         resetBoard();
-        updateGameMessage("Sorry, try again!");
-        updateGameScore(-10);
+        displayMessage("Sorry, try again!");
+        updateScore(-10);
     }, 500);
 }
 
@@ -97,21 +97,21 @@ function disableCards() {
 }
 
 function resetBoard() {
-    [firstCard, secondCard, lockBoard] = [null, null, false];
+    [firstCard, secondCard, boardLocked] = [null, null, false];
 }
 
-function updateGameScore(value) {
+function updateScore(value) {
     score += value;
-    const scoreElement = document.getElementById('game-score');
+    const scoreElement = document.getElementById('score');
     scoreElement.textContent = `${score}`;
     updateScoreColor(scoreElement);
 
     const scoreChangeElement = document.createElement('span');
     scoreChangeElement.textContent = value > 0 ? `+${value}` : `${value}`;
-    scoreChangeElement.classList.add(value > 0 ? 'score-increment' : 'score-decrement');
+    scoreChangeElement.classList.add('score-change', value > 0 ? 'score-increment' : 'score-decrement');
     scoreElement.appendChild(scoreChangeElement);
 
-    const previousChanges = scoreElement.querySelectorAll('.score-increment, .score-decrement');
+    const previousChanges = scoreElement.querySelectorAll('.score-change');
     previousChanges.forEach(change => {
         if (change !== scoreChangeElement) {
             change.style.transform = 'translateY(-20px)';
@@ -132,7 +132,7 @@ function updateScoreColor(scoreElement) {
     scoreElement.classList.toggle('neutral', score === 0);
 }
 
-function updateGameMessage(message) {
+function displayMessage(message) {
     const notificationContainer = document.getElementById('notification-container');
     const notification = document.createElement('div');
     notification.classList.add('notification', 'show');
@@ -161,9 +161,9 @@ function updateGameMessage(message) {
     }, 3000);
 }
 
-function startGameTimer() {
+function startTimer() {
     startTime = Date.now();
-    const timerElement = document.getElementById('game-timer');
+    const timerElement = document.getElementById('timer');
     timerElement.textContent = `Time: 0.000s`;
     timerElement.classList.add('shake');
     let lastSecond = 0;
@@ -174,31 +174,35 @@ function startGameTimer() {
         const currentSecond = Math.floor(timeElapsed);
 
         if (timeElapsed > 10 && currentSecond !== lastSecond && currentSecond > 10) {
-            updateGameScore(-1);
+            updateScore(-1);
             lastSecond = currentSecond;
         }
     }, 110);
 }
 
-function stopGameTimer() {
+function stopTimer() {
     clearInterval(timerInterval);
-    const timerElement = document.getElementById('game-timer');
+    const timerElement = document.getElementById('timer');
     timerElement.textContent = `Time: ${timeElapsed.toFixed(3)}s`;
     timerElement.classList.remove('shake');
 }
 
 function resetGame() {
-    const gameBoard = document.getElementById('game-board');
+    const gameBoard = document.getElementById('board');
     gameBoard.innerHTML = '';
     score = 0;
     matchesFound = 0;
     timerStarted = false;
 
-    const scoreElement = document.getElementById('game-score');
+    const scoreElement = document.getElementById('score');
     scoreElement.textContent = `${score}`;
     updateScoreColor(scoreElement);
-    document.getElementById('game-message').textContent = '';
-    stopGameTimer();
-    document.getElementById('game-timer').textContent = `Time: 0.000s`;
-    createGameBoard();
+    document.getElementById('message').textContent = '';
+    stopTimer();
+    document.getElementById('timer').textContent = `Time: 0.000s`;
+
+    const notificationContainer = document.getElementById('notification-container');
+    notificationContainer.innerHTML = '';
+
+    initializeGameBoard();
 }

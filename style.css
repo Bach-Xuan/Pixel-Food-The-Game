@@ -6,11 +6,10 @@ body {
     height: 100vh;
     margin: 0;
     overflow: hidden;
-    background-color: white;
     font-family: "Pixelify Sans", serif;
 }
 
-#game-status {
+#status-container {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -19,42 +18,27 @@ body {
     position: relative;
 }
 
-#game-board {
+#board {
     display: grid;
     grid-template-columns: repeat(4, 100px);
     grid-gap: 10px;
 }
 
-#game-score,
-#game-message {
+#score {
     margin: 5px 0;
     text-align: center;
-}
-
-#game-score {
     font-size: 50px;
 }
 
-#game-score.positive {
+#score.positive {
     color: blue;
 }
 
-#game-score.negative {
+#score.negative {
     color: red;
 }
 
-#game-score.neutral {
-    color: black;
-}
-
-#game-message {
-    font-size: 20px;
-    color: #333;
-    white-space: nowrap;
-}
-
-.score-increment,
-.score-decrement {
+.score-change {
     position: absolute;
     font-size: 30px;
     animation: fade-out 1s forwards;
@@ -66,6 +50,75 @@ body {
 
 .score-decrement {
     color: orange;
+}
+
+.card {
+    width: 100px;
+    height: 100px;
+    border: 3px solid black;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    background-size: cover;
+    background-image: url('image/cards.jpg');
+}
+
+.notification {
+    position: fixed;
+    bottom: 100px;
+    right: 20px;
+    padding: 10px 20px;
+    border-radius: 5px;
+    display: none;
+    align-items: center;
+    transition: transform 0.3s ease-in-out, bottom 0.3s ease-in-out;
+}
+
+.notification.show {
+    display: flex;
+}
+
+#timer, #author {
+    font-size: 30px;
+    position: fixed;
+    right: 20px;
+}
+
+#timer {
+    bottom: 60px;
+    letter-spacing: 0.1em;
+}
+
+#timer.shake {
+    animation: shake 1s infinite;
+}
+
+#author {
+    bottom: 20px;
+}
+
+#new-game-button {
+    margin-top: 20px;
+    padding: 10px 20px;
+    cursor: pointer;
+    font-size: 60px;
+    color: white;
+    -webkit-text-stroke: 3px red;
+    border: none;
+    background-color: white;
+    font-family: "Pixelify Sans", serif;
+}
+
+#new-game-button:hover {
+    transform: scale(1.2);
+}
+
+#message {
+    margin: 5px 0;
+    text-align: center;
+    font-size: 20px;
+    white-space: nowrap;
 }
 
 @keyframes fade-out {
@@ -80,113 +133,28 @@ body {
     }
 }
 
-.card {
-    width: 100px;
-    height: 100px;
-    border: 3px solid #000;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    cursor: pointer;
-    background-size: cover;
-    background-image: url('image/cards.jpg');
-}
-
-.notification {
-    position: fixed;
-    bottom: 100px;
-    right: 20px;
-    background-color: #333;
-    color: white;
-    padding: 10px 20px;
-    border-radius: 5px;
-    display: none;
-    align-items: center;
-    transition: transform 0.3s ease-in-out, bottom 0.3s ease-in-out;
-}
-
-.notification.show {
-    display: flex;
-}
-
-.notification .close-btn {
-    margin-left: 10px;
-    cursor: pointer;
-    background-color: red;
-    border: none;
-    color: white;
-    padding: 5px;
-    border-radius: 50%;
-}
-
-#game-timer,
-#game-author {
-    font-size: 30px;
-}
-
-#game-timer {
-    margin-top: 20px;
-    position: fixed;
-    bottom: 60px;
-    right: 20px;
-    color: #333;
-    letter-spacing: 0.1em;
-}
-
-#game-timer.shake {
-    animation: shake 1s infinite;
-}
-
 @keyframes shake {
-
-    0%,
-    100% {
+    0%, 100% {
         transform: translate(1px, 1px) rotate(0deg);
     }
 
-    10%,
-    90% {
+    10%, 90% {
         transform: translate(-1px, -1px) rotate(-0.5deg);
     }
 
-    20%,
-    80% {
+    20%, 80% {
         transform: translate(-2px, 0px) rotate(0.5deg);
     }
 
-    30%,
-    70% {
+    30%, 70% {
         transform: translate(2px, 1px) rotate(0deg);
     }
 
-    40%,
-    60% {
+    40%, 60% {
         transform: translate(1px, -0.5px) rotate(0.5deg);
     }
 
     50% {
         transform: translate(-1px, 1px) rotate(-0.5deg);
     }
-}
-
-#game-author {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-}
-
-#new-game-btn {
-    margin-top: 20px;
-    padding: 10px 20px;
-    cursor: pointer;
-    font-size: 60px;
-    color: white;
-    -webkit-text-stroke: 3px red;
-    border: none;
-    background-color: white;
-    font-family: "Pixelify Sans", serif;
-}
-
-#new-game-btn:hover {
-    transform: scale(1.2);
 }
