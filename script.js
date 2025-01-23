@@ -7,40 +7,48 @@ const cards = [
     { img: "image/hotdog.jpg" }, { img: "image/hotdog.jpg" }
 ];
 
-let firstCard = null, secondCard = null, boardLocked = false, score = 0, matchesFound = 0;
-let timerInterval, timeElapsed = 0, timerStarted = false, startTime;
+let firstCard = null, secondCard = null, boardLocked = false, score = 0, matches = 0;
+let timer, elapsed = 0, timerStarted = false, start;
 
 document.addEventListener('DOMContentLoaded', () => {
-    initializeGameBoard();
-    document.getElementById('new-game-button').addEventListener('click', resetGame);
+    preloadImages();
+    initBoard();
+    document.getElementById('new-game').addEventListener('click', reset);
 
-    const notificationContainer = document.createElement('div');
-    notificationContainer.id = 'notification-container';
-    document.body.appendChild(notificationContainer);
+    const alertContainer = document.createElement('div');
+    alertContainer.id = 'alert-container';
+    document.body.appendChild(alertContainer);
 });
 
-function shuffle(array) {
-    for (let i = array.length - 1; i > 0; i--) {
+function preloadImages() {
+    cards.forEach(card => {
+        const img = new Image();
+        img.src = card.img;
+    });
+}
+
+function shuffle(arr) {
+    for (let i = arr.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
-        [array[i], array[j]] = [array[j], array[i]];
+        [arr[i], arr[j]] = [arr[j], arr[i]];
     }
 }
 
-function initializeGameBoard() {
-    const gameBoard = document.getElementById('board');
+function initBoard() {
+    const board = document.getElementById('board');
     shuffle(cards);
     const fragment = document.createDocumentFragment();
     cards.forEach(card => {
-        const cardElement = document.createElement('div');
-        cardElement.classList.add('card');
-        cardElement.dataset.value = card.img;
-        cardElement.addEventListener('click', flipCard);
-        fragment.appendChild(cardElement);
+        const cardEl = document.createElement('div');
+        cardEl.classList.add('card');
+        cardEl.dataset.value = card.img;
+        cardEl.addEventListener('click', flip);
+        fragment.appendChild(cardEl);
     });
-    gameBoard.appendChild(fragment);
+    board.appendChild(fragment);
 }
 
-function flipCard() {
+function flip() {
     if (boardLocked || this === firstCard) return;
 
     if (!timerStarted) {
@@ -57,43 +65,47 @@ function flipCard() {
     }
 
     secondCard = this;
-    checkForMatch();
+    checkMatch();
 }
 
-function checkForMatch() {
-    const isMatch = firstCard.dataset.value === secondCard.dataset.value;
-    isMatch ? handleMatch() : handleNoMatch();
+function checkMatch() {
+    const match = firstCard.dataset.value === secondCard.dataset.value;
+    match ? handleMatch() : handleMismatch();
 }
 
 function handleMatch() {
     disableCards();
     updateScore(15);
-    matchesFound++;
-    displayMessage("You found a match!");
+    matches++;
+    showMessage("You found a match!");
 
-    if (matchesFound === cards.length / 2) {
-        displayMessage("Congratulations! You found them all!");
+    if (matches === cards.length / 2) {
+        showMessage("Congratulations! You found them all!");
         stopTimer();
     }
 }
 
-function handleNoMatch() {
+function handleMismatch() {
     boardLocked = true;
     setTimeout(() => {
-        firstCard.classList.remove('flipped');
-        secondCard.classList.remove('flipped');
-        firstCard.style.backgroundImage = 'url(image/cards.jpg)';
-        secondCard.style.backgroundImage = 'url(image/cards.jpg)';
+        unflipCards();
         resetBoard();
-        displayMessage("Sorry, try again!");
+        showMessage("Sorry, try again!");
         updateScore(-10);
     }, 500);
 }
 
 function disableCards() {
-    firstCard.removeEventListener('click', flipCard);
-    secondCard.removeEventListener('click', flipCard);
+    firstCard.removeEventListener('click', flip);
+    secondCard.removeEventListener('click', flip);
     resetBoard();
+}
+
+function unflipCards() {
+    firstCard.classList.remove('flipped');
+    secondCard.classList.remove('flipped');
+    firstCard.style.backgroundImage = 'url(image/cards.jpg)';
+    secondCard.style.backgroundImage = 'url(image/cards.jpg)';
 }
 
 function resetBoard() {
@@ -102,107 +114,120 @@ function resetBoard() {
 
 function updateScore(value) {
     score += value;
-    const scoreElement = document.getElementById('score');
-    scoreElement.textContent = `${score}`;
-    updateScoreColor(scoreElement);
+    const scoreEl = document.getElementById('score');
+    scoreEl.textContent = `${score}`;
+    updateScoreColor(scoreEl);
 
-    const scoreChangeElement = document.createElement('span');
-    scoreChangeElement.textContent = value > 0 ? `+${value}` : `${value}`;
-    scoreChangeElement.classList.add('score-change', value > 0 ? 'score-increment' : 'score-decrement');
-    scoreElement.appendChild(scoreChangeElement);
+    const scoreChangeEl = document.createElement('span');
+    scoreChangeEl.textContent = value > 0 ? `+${value}` : `${value}`;
+    scoreChangeEl.classList.add('score-change', value > 0 ? 'score-inc' : 'score-dec');
+    scoreEl.appendChild(scoreChangeEl);
 
-    const previousChanges = scoreElement.querySelectorAll('.score-change');
-    previousChanges.forEach(change => {
-        if (change !== scoreChangeElement) {
+    const prevChanges = scoreEl.querySelectorAll('.score-change');
+    prevChanges.forEach(change => {
+        if (change !== scoreChangeEl) {
             change.style.transform = 'translateY(-20px)';
         }
     });
 
     setTimeout(() => {
-        scoreChangeElement.style.opacity = '0';
+        scoreChangeEl.style.opacity = '0';
     }, 1000);
     setTimeout(() => {
-        scoreElement.removeChild(scoreChangeElement);
+        scoreEl.removeChild(scoreChangeEl);
     }, 1500);
 }
 
-function updateScoreColor(scoreElement) {
-    scoreElement.classList.toggle('positive', score > 0);
-    scoreElement.classList.toggle('negative', score < 0);
-    scoreElement.classList.toggle('neutral', score === 0);
+function updateScoreColor(scoreEl) {
+    scoreEl.classList.toggle('positive', score > 0);
+    scoreEl.classList.toggle('negative', score < 0);
+    scoreEl.classList.toggle('neutral', score === 0);
 }
 
-function displayMessage(message) {
-    const notificationContainer = document.getElementById('notification-container');
-    const notification = document.createElement('div');
-    notification.classList.add('notification', 'show');
-    notification.innerHTML = `<span class="message">${message}</span><button class="close-btn">x</button>`;
+function showMessage(msg) {
+    const alertContainer = document.getElementById('alert-container');
+    const alert = document.createElement('div');
+    alert.classList.add('alert', 'show');
 
-    notificationContainer.appendChild(notification);
+    let color;
+    if (msg === "Sorry, try again!") {
+        color = 'red';
+    } else if (msg === "You found a match!") {
+        color = 'blue';
+    } else if (msg === "Congratulations! You found them all!") {
+        color = 'yellow';
+    }
+    alert.innerHTML = `<span class="message" style="color: ${color};">${msg}</span>`;
 
-    const closeButton = notification.querySelector('.close-btn');
-    closeButton.addEventListener('click', () => {
-        notification.classList.remove('show');
-        setTimeout(() => {
-            notificationContainer.removeChild(notification);
-        }, 300);
+    alertContainer.appendChild(alert);
+
+    const prevAlerts = alertContainer.querySelectorAll('.alert.show');
+    prevAlerts.forEach((notif, index) => {
+        notif.style.bottom = `${100 + (prevAlerts.length - index - 1) * 60}px`;
     });
 
-    const previousNotifications = notificationContainer.querySelectorAll('.notification.show');
-    previousNotifications.forEach((notif, index) => {
-        notif.style.bottom = `${100 + (previousNotifications.length - index - 1) * 60}px`;
-    });
+    const displayDuration = msg === "Congratulations! You found them all!" ? 10000 : 5000;
 
     setTimeout(() => {
-        notification.classList.remove('show');
+        alert.classList.remove('show');
         setTimeout(() => {
-            notificationContainer.removeChild(notification);
+            alertContainer.removeChild(alert);
         }, 300);
-    }, 3000);
+    }, displayDuration);
 }
 
 function startTimer() {
-    startTime = Date.now();
-    const timerElement = document.getElementById('timer');
-    timerElement.textContent = `Time: 0.000s`;
-    timerElement.classList.add('shake');
-    let lastSecond = 0;
+    start = Date.now();
+    const timerEl = document.getElementById('timer');
+    timerEl.innerHTML = `Time: <span class="time-black">0.000s</span>`;
+    timerEl.classList.add('shake');
+    let lastSec = 0;
 
-    timerInterval = setInterval(() => {
-        timeElapsed = (Date.now() - startTime) / 1000;
-        timerElement.textContent = `Time: ${timeElapsed.toFixed(3)}s`;
-        const currentSecond = Math.floor(timeElapsed);
+    timer = setInterval(() => {
+        elapsed = (Date.now() - start) / 1000;
+        const timeSpan = timerEl.querySelector('span');
+        timeSpan.textContent = `${elapsed.toFixed(3)}s`;
+        const currSec = Math.floor(elapsed);
 
-        if (timeElapsed > 10 && currentSecond !== lastSecond && currentSecond > 10) {
+        if (elapsed > 10 && currSec !== lastSec && currSec > 10) {
             updateScore(-1);
-            lastSecond = currentSecond;
+            lastSec = currSec;
+        }
+
+        if (elapsed <= 10) {
+            timeSpan.classList.add('time-blue');
+            timeSpan.classList.remove('time-red', 'time-black');
+        } else {
+            timeSpan.classList.add('time-red');
+            timeSpan.classList.remove('time-blue', 'time-black');
         }
     }, 110);
 }
 
 function stopTimer() {
-    clearInterval(timerInterval);
-    const timerElement = document.getElementById('timer');
-    timerElement.textContent = `Time: ${timeElapsed.toFixed(3)}s`;
-    timerElement.classList.remove('shake');
+    clearInterval(timer);
+    const timerEl = document.getElementById('timer');
+    const timeSpan = timerEl.querySelector('span');
+    timeSpan.textContent = `${elapsed.toFixed(3)}s`;
+    timerEl.classList.remove('shake');
 }
 
-function resetGame() {
-    const gameBoard = document.getElementById('board');
-    gameBoard.innerHTML = '';
+function reset() {
+    const board = document.getElementById('board');
+    board.innerHTML = '';
     score = 0;
-    matchesFound = 0;
+    matches = 0;
     timerStarted = false;
 
-    const scoreElement = document.getElementById('score');
-    scoreElement.textContent = `${score}`;
-    updateScoreColor(scoreElement);
+    const scoreEl = document.getElementById('score');
+    scoreEl.textContent = `${score}`;
+    updateScoreColor(scoreEl);
     document.getElementById('message').textContent = '';
     stopTimer();
-    document.getElementById('timer').textContent = `Time: 0.000s`;
+    document.getElementById('timer').innerHTML = `Time: <span class="time-black">0.000s</span>`;
 
-    const notificationContainer = document.getElementById('notification-container');
-    notificationContainer.innerHTML = '';
+    const alertContainer = document.getElementById('alert-container');
+    alertContainer.innerHTML = '';
 
-    initializeGameBoard();
+    initBoard();
 }

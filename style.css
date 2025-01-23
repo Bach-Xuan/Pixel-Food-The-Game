@@ -9,10 +9,14 @@ body {
     font-family: "Pixelify Sans", serif;
 }
 
-#status-container {
+#status,
+.alert {
     display: flex;
-    flex-direction: column;
     align-items: center;
+}
+
+#status {
+    flex-direction: column;
     margin-bottom: 20px;
     height: 60px;
     position: relative;
@@ -44,11 +48,11 @@ body {
     animation: fade-out 1s forwards;
 }
 
-.score-increment {
+.score-inc {
     color: green;
 }
 
-.score-decrement {
+.score-dec {
     color: orange;
 }
 
@@ -64,22 +68,23 @@ body {
     background-image: url('image/cards.jpg');
 }
 
-.notification {
+.alert {
     position: fixed;
     bottom: 100px;
     right: 20px;
     padding: 10px 20px;
     border-radius: 5px;
     display: none;
-    align-items: center;
     transition: transform 0.3s ease-in-out, bottom 0.3s ease-in-out;
+    font-size: 25px;
 }
 
-.notification.show {
+.alert.show {
     display: flex;
 }
 
-#timer, #author {
+#timer,
+#author {
     font-size: 30px;
     position: fixed;
     right: 20px;
@@ -94,15 +99,31 @@ body {
     animation: shake 1s infinite;
 }
 
+#timer.blue {
+    color: blue;
+}
+
+#timer.red {
+    color: red;
+}
+
+#timer .time-blue {
+    color: blue;
+}
+
+#timer .time-red {
+    color: red;
+}
+
 #author {
     bottom: 20px;
 }
 
-#new-game-button {
+#new-game {
     margin-top: 20px;
     padding: 10px 20px;
     cursor: pointer;
-    font-size: 60px;
+    font-size: 50px;
     color: white;
     -webkit-text-stroke: 3px red;
     border: none;
@@ -110,15 +131,8 @@ body {
     font-family: "Pixelify Sans", serif;
 }
 
-#new-game-button:hover {
+#new-game:hover {
     transform: scale(1.2);
-}
-
-#message {
-    margin: 5px 0;
-    text-align: center;
-    font-size: 20px;
-    white-space: nowrap;
 }
 
 @keyframes fade-out {
@@ -134,23 +148,29 @@ body {
 }
 
 @keyframes shake {
-    0%, 100% {
+
+    0%,
+    100% {
         transform: translate(1px, 1px) rotate(0deg);
     }
 
-    10%, 90% {
+    10%,
+    90% {
         transform: translate(-1px, -1px) rotate(-0.5deg);
     }
 
-    20%, 80% {
+    20%,
+    80% {
         transform: translate(-2px, 0px) rotate(0.5deg);
     }
 
-    30%, 70% {
+    30%,
+    70% {
         transform: translate(2px, 1px) rotate(0deg);
     }
 
-    40%, 60% {
+    40%,
+    60% {
         transform: translate(1px, -0.5px) rotate(0.5deg);
     }
 
